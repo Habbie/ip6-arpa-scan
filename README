@@ -1,0 +1,19 @@
+See http://7bits.nl/blog/2012/03/26/finding-v6-hosts-by-efficiently-mapping-ip6-arpa
+for some explanation.
+
+This tool is quite rudimentary. It takes 2 or 3 arguments.
+
+Example usage:
+
+  # find all hosts (/128) in this prefix by asking 192.0.2.1
+  $ ./ip6-arpa-scan.py 0.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa 192.0.2.1
+
+  # find all existing /64 networks in this prefix
+  $ ./ip6-arpa-scan.py 0.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa 192.0.2.1 64
+
+It does not look at results at all, beyond checking for NOERROR. If you point
+it at an auth, and there are delegations, it might drill down into those while
+asking the auth (because referrals have rcode NOERROR too), wasting a lot of
+bandwidth and time. This can be mitigated by expanding the tool (perhaps
+requiring a SOA with every NOERROR), or by pointing the tool at a recursor you
+have access to. I have not tested this scenario.

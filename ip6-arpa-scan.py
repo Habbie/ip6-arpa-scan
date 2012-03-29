@@ -4,6 +4,8 @@ import sys
 
 queries=0
 l=[]
+progress=[0]*3
+progressperc=0
 
 def tryquery(q, server):
 	while 1:
@@ -12,9 +14,14 @@ def tryquery(q, server):
 		except exception.Timeout:
 			pass
 
-def drilldown(base, server, limit):
-	global queries, l
-	print >> sys.stderr, '\r%*s, %s queries done, %s found' % (limit, base, queries, len(l)),
+def drilldown(base, server, limit, depth=0):
+	global queries, l, progress, progressperc
+	if depth == len(progress):
+		progressperc = 0 
+		for i in range(len(progress)):
+			progressperc = progressperc + (progress[i] / (16.0**(i+1)))*100
+
+	print >> sys.stderr, '\r%*s, %s queries done, %s found, %.2f%% done' % (limit, base, queries, len(l), progressperc),
 
 	q = message.make_query(base, 'PTR')
 	r = tryquery(q, server)
@@ -25,7 +32,10 @@ def drilldown(base, server, limit):
 			l.append(base)
 		if len(base) < limit:
 	 		for c in '0123456789abcdef':
-				drilldown(c+'.'+base, server, limit)
+				if depth < len(progress):
+					progress[depth]=int(c, 16)
+				#print "progress[%s]=%s" % (depth, progress[depth])
+				drilldown(c+'.'+base, server, limit, depth+1)
 			
 
 (base, server) = sys.argv[1:3]

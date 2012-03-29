@@ -17,3 +17,8 @@ asking the auth (because referrals have rcode NOERROR too), wasting a lot of
 bandwidth and time. This can be mitigated by expanding the tool (perhaps
 requiring a SOA with every NOERROR), or by pointing the tool at a recursor you
 have access to. I have not tested this scenario.
+
+The progress indicator is very rough; many networks have concentrated their
+hosts in the lower regions of their ranges, so it's not unlikely to see a
+very slow climb from 0 to 1 to 2% and then a sudden sprint towards 100%
+

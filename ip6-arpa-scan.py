@@ -14,7 +14,7 @@ def tryquery(q, server):
 
 def drilldown(base, server, limit):
 	global queries, l
-	print >> sys.stderr, '\r%*s, %s queries done' % (limit, base, queries),
+	print >> sys.stderr, '\r%*s, %s queries done, %s found' % (limit, base, queries, len(l)),
 
 	q = message.make_query(base, 'PTR')
 	r = tryquery(q, server)
@@ -43,7 +43,10 @@ if not base.endswith('ip6.arpa.'):
 	print 'please pass an ip6.arpa name'
 	sys.exit(1)
 
-drilldown(base, server, limit)
+try:
+	drilldown(base, server, limit)
+except KeyboardInterrupt:
+	print >> sys.stderr, '\naborted, partial results follow'
 
 print >> sys.stderr, '\nnames found: %s' % len(l)
 print >> sys.stderr, 'queries done: %s' % queries
